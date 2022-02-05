@@ -1,8 +1,8 @@
 # Marvel API 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+ Live version: https://marvelapi-1afdc.web.app
 
-## Available Scripts
+
 
 
 
