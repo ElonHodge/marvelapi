@@ -75,7 +75,7 @@ const SignUp = ({ setUserID }) => {
 
 
         if (password.length > 5 && email.length > 0 && emailHelper.length === 0
-            && password === confirmPassword && username.length > 0){
+            && password === confirmPassword && username.length > 0 && username.length > 3){
             setDisable("")
         }else {
             setDisable("disabled")

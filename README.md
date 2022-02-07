@@ -32,7 +32,7 @@ Firebase backend
 - Profile Picture
 - Adding comics to favorite list 
 - Recommendations depending on your liked Characters and Comics 
-- Moves Section
+- Movies Section
 
 
 

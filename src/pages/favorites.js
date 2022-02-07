@@ -78,7 +78,7 @@ const Favorites = ({remove,userID}) => {
                                                     setCharacterData(value);
                                                     setCharacterWindow(false)
                                                 }}
-                                                     src={value.thumbnail.path + "/landscape_small." + value.thumbnail.extension}
+                                                     src={value.thumbnail.path.replace('http','https') + "/landscape_small." + value.thumbnail.extension}
                                                      alt=""/>
 
                                                 <p className={`text-truncate`}>{value.name}</p>
