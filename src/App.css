@@ -1,0 +1,29 @@
+
+.portraitImg,.favImg{
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+.portraitImg:hover,.favImg{
+    cursor: pointer;
+}
+.pointerChange{
+    cursor: pointer;
+}
+
+
+.closeBtn,.btnAdd,.btnSub,.btnClear{
+    background: transparent;
+    border:none;
+    color:transparent;
+}
+
+.CharacterData:hover{
+    background-color: lightgrey;
+}
+.closeBtn{
+    background: transparent;
+    border:none;
+    color:transparent
+}
+
