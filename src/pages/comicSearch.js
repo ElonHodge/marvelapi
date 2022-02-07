@@ -20,11 +20,12 @@ const ComicSearch = ({res}) => {
     const dataComic = res;
     const [offSet,setOffSet ] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
-    const [charactersPerPage] = useState(20);
+    const [charactersPerPage] = useState(30);
     const indexOfLastCharacter = currentPage * charactersPerPage;
     const indexOfFirstCharacter = indexOfLastCharacter - charactersPerPage;
     const [,setCollectionSet ] = useState(1);
     const [loading, setLoading] = useState(false)
+    const [error,serError ] = useState("");
     const [showData,setShowData] = useState(false);
     const [comicSearchData, setComicSearchData] = useState(dataComic)
     const [comicData, setComicData] = useState([])
@@ -43,11 +44,12 @@ const ComicSearch = ({res}) => {
             setComicSearchData(response.data)
             setSetCount( Math.ceil((response.data.data.total / 100)))
             setLoading(false)
+            serError('')
 
         } catch (error) {
             console.error(error)
             setLoading(false)
-
+            serError("error")
         }
     }
 
@@ -108,7 +110,6 @@ const ComicSearch = ({res}) => {
 
     const paginateSets = () =>{
         setCurrentPage(1)
-        setNumberSet(1)
         fetchCharacter()}
 
     const showComicSearch = ()=>{
@@ -160,9 +161,12 @@ const ComicSearch = ({res}) => {
        return loading? <h3 className={`d-flex justify-content-center`}>
            <img  width={`100`} src={`https://c.tenor.com/tEBoZu1ISJ8AAAAC/spinning-loading.gif`} alt={`spinning loading circle`}/>
 
-       </h3>  : ""
+       </h3>  : showError()
     }
 
+    const showError = () => {
+        return error ? <h3> <span style={{color:"red"}}>error please try again</span> </h3> : ''
+    }
 
     const closeBtnLayout = <button className='d-flex justify-content-end closeBtn mt-4' onClick={closeComicData}>
         <img src={close_btn} alt="Logo"/>
@@ -204,7 +208,7 @@ const ComicSearch = ({res}) => {
 
     return (
         <div className='container-fluid'>
-            <form onSubmit={handleSubmit}>
+            {!loading ? <form onSubmit={handleSubmit}>
                 <div className="input-group">
                     <button className="btn  border"  type="button" data-toggle="collapse" data-target="#collapseExample"
                             aria-expanded="false" aria-controls="collapseExample">
@@ -272,7 +276,8 @@ const ComicSearch = ({res}) => {
                     </div>
                 </div>
 
-            </form>
+            </form> : ""}
+
                 <div className="row">
                     {
                         showData ? <> {closeBtnLayout}

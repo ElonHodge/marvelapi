@@ -31,6 +31,7 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
     const [characterFilter, setCharacterFilter] = useState('nameStartsWith=')
     const [orderBy, setOrderBy] = useState('&orderBy=name')
     const [loading, setLoading] = useState(false)
+    const [error,setError ] = useState("");
     const [apiData, setApiData] = useState(res);
     const [numberSet, setNumberSet] = useState(1);
     const [buttonsNumSet, setButtonsNumSet] = useState([])
@@ -46,11 +47,13 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
             setCount(Math.ceil(response.data.data.total/100))
             if (response.data.data.total > 0) setCharacterData(response.data.data.results[0])
             setLoading(false)
+            setError("")
             showFavorites()
 
         } catch (error) {
             console.error(error)
             setLoading(false)
+            setError("error")
 
         }
     }
@@ -111,8 +114,6 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
 
     const paginateSets = () => {
         setCurrentPage(1)
-        setNumberSet(1)
-
         fetchCharacter()
     }
 
@@ -121,7 +122,11 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
             <img width={`100`} src={`https://c.tenor.com/tEBoZu1ISJ8AAAAC/spinning-loading.gif`}
                  alt={`spinning loading circle`}/>
             loading
-        </h3> : ""
+        </h3> : showError()
+    }
+
+    const showError = () => {
+        return error ? <h3> <span style={{color:"red"}}>error please try again</span> </h3> : ''
     }
 
     const currentCharacter = apiData.data.results.slice(indexOfFirstCharacter, indexOfLastCharacter);
@@ -210,7 +215,6 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
                 </div>
             </div>
         </div>
-
     </form>
 
     const characterSearchLayout = () => <div className='row'>
@@ -377,7 +381,7 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
 
     <div className='container-fluid'>
 
-        {formLayout()}
+        {loading ? "": formLayout()}
 
         {characterSearchLayout()}
 

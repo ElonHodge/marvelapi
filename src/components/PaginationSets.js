@@ -1,4 +1,3 @@
-import {Link} from "react-router-dom";
 
 const PaginationSets = ({pages,paginate,mouseOver,click}) => {
 
@@ -8,6 +7,7 @@ const PaginationSets = ({pages,paginate,mouseOver,click}) => {
             <ul className={`pagination`}>
                 <li className="page-item ">
                     <a
+                        href='#'
                         className='page-link pointerChange '
                         onClick={() => click("previous")}
                     >
@@ -18,19 +18,20 @@ const PaginationSets = ({pages,paginate,mouseOver,click}) => {
 
                     return(
                         <li  key={number} className='page-item'>
-                            <Link
-                                to="#"
+                            <a
+                                href="#"
                                 className={`page-link ` }
                                 onClick={() => paginate(number)}
                                 onMouseOver={()=> mouseOver(number)}
                             >
                                 {number}
-                            </Link>
+                            </a>
                         </li>
                     )
                 })}
                 <li className="page-item pointerChange">
                     <a
+                        href='#'
                         className={`page-link`}
                         onClick={() => click("next")}
                     >
