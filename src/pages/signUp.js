@@ -4,6 +4,7 @@ import {initializeApp} from 'firebase/app'
 import {getFirestore,doc,setDoc} from 'firebase/firestore'
 import { getAuth,createUserWithEmailAndPassword} from 'firebase/auth'
 import personCircle  from '../images/personCircle.svg'
+import axios from "axios";
 const firebaseApp = initializeApp({
     apiKey: "AIzaSyDkwb1l6sp-XKMsSpowRd-KZXuq3Wo5fQI",
     authDomain: "marvelapi-1afdc.firebaseapp.com",
@@ -88,8 +89,7 @@ const SignUp = ({ setUserID }) => {
 
         try {
             const userCredential = await createUserWithEmailAndPassword (auth, email, password);
-            writeToUser(username,userCredential.user.uid)
-            setUserID(username)
+            writeToUser(username,userCredential.user.uid,email)
 
             console.log(userCredential.user)
         }catch (error){
@@ -99,17 +99,30 @@ const SignUp = ({ setUserID }) => {
 
     }
 
-    const writeToUser = (username,uid) => {
-        const users = doc(fireStore,'users/'+uid)
+    // const writeToUser = (username,uid) => {
+    //     const users = doc(fireStore,'users/'+uid)
+    //
+    //     const userInfo = {
+    //         name: username,
+    //     }
+    //
+    //     setDoc(users, userInfo);
+    //
+    // }
+    const writeToUser = (username,uid,email) => {
 
-        const userInfo = {
-            name: username,
+        try {
+            axios.post("http://localhost:8080/api/v1/adduser", {
+                "userId": uid,
+                "userEmail": email,
+                "userName": username
+            });
+            setUserID(username)
+
+        }catch (error) {
+            console.error(error)
         }
-
-        setDoc(users, userInfo);
-
     }
-
     const handleSubmit = e => {
         e.preventDefault()
 

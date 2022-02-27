@@ -254,6 +254,7 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
                                                                 data-bs-placement="bottom"
                                                                 title="Login to like"
                                                         >
+                                                            {/*{**Hearts*}*/}
                                                             <img id={"H" + value.id} src={heart} alt={`heart`}
                                                                  onClick={() => {
                                                                      toggleHeart(value);
@@ -306,7 +307,7 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
         </div>
 
     const paginateSetsLayout = () => <div>
-        { (apiData.data.total > 0?
+        { (apiData.data.total > 100?
             <div >
                 <p><span className="fw-bold">Set count:</span> {count}</p>
                 <p><span className="fw-bold"> Max Results per set :</span>100</p>
@@ -329,10 +330,7 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
                 if (image != null){
                     image.src = heart_fill;
                 }
-
-            }
-
-        }else {
+            }}else {
             let data = apiData.data.results;
             for (let i = 0; i  < data.length ; i++) {
                 let image =  document.getElementById("H"+data[i].id);

@@ -1,11 +1,12 @@
 import React, {useEffect} from 'react';
-import {Link} from "react-router-dom";
+import {Link,useLocation} from "react-router-dom";
 import {useContext} from "react";
 import UserContext from "../contexts/UserContext";
 import personCircleWhite from '../images/personCircleWhite.svg'
 
 const Navbar = ({logout,username}) => {
     const user = useContext(UserContext)
+    const location = useLocation();
 
     useEffect(() => user,[user])
     return (
@@ -42,7 +43,7 @@ const Navbar = ({logout,username}) => {
                                 !user ?
                                     <ul className={`navbar-nav`}>
                                         <li className="nav-item " >
-                                                <Link className = "nav-link text-white `nav-link" to="login">
+                                                <Link className = "nav-link text-white `nav-link" state={location.pathname} to="login">
                                                     <img src={personCircleWhite} alt="person portrait"/>
                                                     {" Login"}
                                                 </Link>
@@ -67,9 +68,7 @@ const Navbar = ({logout,username}) => {
                                                     </button>
                                                 </ul>
 
-
                                             </div>
-
                             }
 
                 </div>

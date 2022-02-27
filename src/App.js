@@ -1,7 +1,7 @@
 import './App.css'
 import {spiderCharacterData as characterData} from "./spiderCharacterData"
 import spiderComicData from "./spiderComicData";
-import {Route, Routes} from "react-router-dom";
+import { Route, Routes} from "react-router-dom";
 import {CharacterSearch} from "./pages/characterSearch";
 import Navbar from "./components/Navbar";
 import Home from "./pages/home";
@@ -18,6 +18,7 @@ import {getAuth, onAuthStateChanged,signOut} from 'firebase/auth';
 import Login from "./pages/login";
 import UserAccount from "./pages/userAccount";
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
 const firebaseApp = initializeApp({
     apiKey: "AIzaSyDkwb1l6sp-XKMsSpowRd-KZXuq3Wo5fQI",
@@ -38,6 +39,9 @@ function App() {
     const navigate = useNavigate();
 
 
+
+
+//**Hearts**//
     const toggleHeart = (character) => {
         if (userID !== "") {
             const doubleValidation = favoritesCharactersList.some(favCharacterID => favCharacterID.id === character.id);
@@ -50,7 +54,6 @@ function App() {
                     writeToUserFavorites(character, character.id)
                     viewCollection()
                     console.log("favoritesList added")
-
                 }
                 image.src = heart_fill;
 
@@ -102,18 +105,22 @@ function App() {
 
     const getUserName = async () => {
 
-        const docRef = doc(fireStore, "users/" + userID?.uid);
-        const docSnap = await getDoc(docRef);
-
-        if (userID!== ""){
-            if (docSnap.exists()) {
-                // console.log("Document data:", docSnap.data());
-                setUsername(docSnap?.data().name)
-            } else {
-                // doc.data() will be undefined in this case
-                console.log("No such document!");
+            try {
+                // eslint-disable-next-line no-template-curly-in-string
+                const  response = await  axios.get("http://localhost:8080/api/v1/userbyid/"+userID.uid)
+                console.log(response)
+            } catch (error) {
+                console.error(error)
             }
-        }
+        // if (userID!== ""){
+        //     if (docSnap.exists()) {
+        //         // console.log("Document data:", docSnap.data());
+        //         setUsername(docSnap?.data().name)
+        //     } else {
+        //         // doc.data() will be undefined in this case
+        //         console.log("No such document!");
+        //     }
+        // }
 
     }
 
@@ -153,6 +160,8 @@ function App() {
         stateChange()
     }, [userID,userName])
 
+
+
     return (
         <UserContext.Provider value={userID}>
 
@@ -165,6 +174,7 @@ function App() {
                                                                        res={characterData}
                                                                        favoritesList={favoritesCharacters}/>}/>
                     <Route path='comics' element={<ComicSearch res={spiderComicData}/>}/>
+
                     <Route path='signUp' element={<SignUp setUserID={setUserID}/>}/>
                     <Route path='login' element={<Login/>}/>
                     <Route path='account' element={<UserAccount userID={userID} username={userName} logout={logout}/>}/>

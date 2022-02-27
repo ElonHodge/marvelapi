@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 import {movieQuotes} from "../movieQuotes";
 const Home = () => {
 
-     const [quotes,setQuotes ] = useState(movieQuotes[0]);
+    const [quotes,setQuotes ] = useState(movieQuotes[0]);
 
     const quoteGenerator = () => {
         let randomNumber = Math.ceil(Math.random() * movieQuotes.length)

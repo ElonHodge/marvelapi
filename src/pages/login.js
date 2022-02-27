@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Link, useNavigate} from 'react-router-dom'
+import {Link, useNavigate, useLocation,} from 'react-router-dom'
 import {initializeApp} from 'firebase/app';
 import {getAuth,signInWithEmailAndPassword} from 'firebase/auth';
 import personCircle  from '../images/personCircle.svg'
@@ -21,7 +21,7 @@ const Login = () => {
     const [emailHelper,setEmailHelper] = useState('')
     const [disable,setDisable] = useState('disabled')
     const navigate = useNavigate();
-
+    const location = useLocation();
 
     const validateEmail = () => {
         (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)?
@@ -42,12 +42,20 @@ const Login = () => {
         }
     }
 
+
+
+
     const  login = async () => {
+
 
         try {
              await signInWithEmailAndPassword(auth, email, password);
 
-             navigate("/characters")
+
+
+            console.log(auth.currentUser);
+
+            navigate(location.state, {replace:true})
 
         } catch (e) {
             setPasswordHelper("Email/Password combination not valid")

@@ -31,6 +31,8 @@ const CharacterData = (props) => {
 
         fetchComic()
     }
+
+
     const getComicId = (comicId => setComicId(comicId.replace('http','https')))
     const closeComicData = () => setComicData([])
 
