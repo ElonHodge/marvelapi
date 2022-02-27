@@ -104,23 +104,13 @@ function App() {
 
 
     const getUserName = async () => {
-
-            try {
+        try {
                 // eslint-disable-next-line no-template-curly-in-string
                 const  response = await  axios.get("http://localhost:8080/api/v1/userbyid/"+userID.uid)
-                console.log(response)
+                setUsername(response.data.userName)
             } catch (error) {
                 console.error(error)
             }
-        // if (userID!== ""){
-        //     if (docSnap.exists()) {
-        //         // console.log("Document data:", docSnap.data());
-        //         setUsername(docSnap?.data().name)
-        //     } else {
-        //         // doc.data() will be undefined in this case
-        //         console.log("No such document!");
-        //     }
-        // }
 
     }
 
