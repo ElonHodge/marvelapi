@@ -40,7 +40,6 @@ function App() {
 
 
 
-
 //**Hearts**//
     const toggleHeart = (character) => {
         if (userID !== "") {
@@ -52,7 +51,6 @@ function App() {
                 if (doubleValidation === false){
                     favoritesCharactersList.push(character)
                     writeToUserFavorites(character, character.id)
-                    viewCollection()
                     console.log("favoritesList added")
                 }
                 image.src = heart_fill;
@@ -92,13 +90,14 @@ function App() {
     }
 
     const viewCollection = async () => {
-        const querySnapshot = await getDocs(collection(fireStore, "users/" + userID.uid + "/favs"));
-        querySnapshot.forEach((doc) => {
-            // console.log(doc.id, " => ", doc.data());
-            favoritesCharactersList.push(doc.data())
-        });
-        setFavoritesCharacters(favoritesCharactersList)
-        // console.log("view",favoritesList)
+        try {
+            // eslint-disable-next-line no-template-curly-in-string
+            const  response = await  axios.get("http://localhost:8080/api/v1/favsbyuserid/"+userID.uid);
+            favoritesCharactersList.push(response.data)
+
+        } catch (error) {
+            console.error(error)
+        }
 
     }
 
@@ -111,12 +110,10 @@ function App() {
             } catch (error) {
                 console.error(error)
             }
-
     }
 
     const writeToUserFavorites = (obj, name) => {
-        const users = doc(fireStore, 'users/' + userID.uid + '/favs/' + name)
-        setDoc(users, obj);
+
 
     }
 
@@ -145,11 +142,9 @@ function App() {
 
 
     useEffect(() => {
-        viewCollection()
         getUserName()
         stateChange()
     }, [userID,userName])
-
 
 
     return (

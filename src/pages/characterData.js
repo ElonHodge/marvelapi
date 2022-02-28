@@ -11,7 +11,7 @@ const ifEmpty = (data) => (data === '' ?  "N/A" :  data)
 
 
 const CharacterData = (props) => {
-
+    console.log(props.res)
     const [comicId, setComicId] = useState("")
     const [comicData, setComicData] = useState([])
     const getComicById = comicId + time + authorization;

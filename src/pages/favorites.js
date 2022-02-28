@@ -1,20 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import Pagination from "../components/Pagination";
 import CharacterData from "./characterData";
-import {initializeApp} from 'firebase/app';
-import {getFirestore, getDocs, collection} from 'firebase/firestore';
-
-const firebaseApp = initializeApp({
-    apiKey: "AIzaSyDkwb1l6sp-XKMsSpowRd-KZXuq3Wo5fQI",
-    authDomain: "marvelapi-1afdc.firebaseapp.com",
-    projectId: "marvelapi-1afdc",
-    storageBucket: "marvelapi-1afdc.appspot.com",
-    messagingSenderId: "736554199494",
-    appId: "1:736554199494:web:ab7a2a04373b372b6eeac7"
-});
-
-
-const fireStore = getFirestore();
+import axios from "axios";
+import {baseCharacters,authorization} from "../apiInfo";
 
 
 
@@ -24,28 +12,61 @@ const Favorites = ({remove,userID}) => {
     const [favoritesCharacters, setFavoritesCharacters] = useState([]);
     const [currentPageCharacter, setCurrentPageCharacter] = useState(1);
     const [charactersPerPage] = useState(20);
-    const [characterData, setCharacterData] = useState();
+    const [characterData, setCharacterData] = useState("");
     const [totalFavorites,setTotalFavorites ] = useState(0);
     const [characterWindow, setCharacterWindow] = useState(true);
     const indexOfLastCharacter = currentPageCharacter * charactersPerPage;
     const indexOfFirstCharacter = indexOfLastCharacter - charactersPerPage;
 
-    const viewCharacterFavorites = async () => {
-        const querySnapshot = await getDocs(collection(fireStore, "users/" + userID.uid + "/favs"));
-        querySnapshot.forEach((doc) => {
-            // console.log(doc.id, " => ", doc.data());
-            const duplicateValidation = favoritesListTemp.some(favCharacterID => favCharacterID.id === doc.data().id);
-            if (duplicateValidation === false ){
-                favoritesListTemp.push(doc.data());
-                setFavoritesListTemp(favoritesListTemp)
-                const currentCharacters = favoritesListTemp.slice(indexOfFirstCharacter, indexOfLastCharacter);
-                setFavoritesCharacters(currentCharacters)
-                setTotalFavorites(favoritesListTemp.length)
-            }
-        });
 
+    const fetchCharacterData = async (characterId) => {
+        try {
+            const response = await axios.get(`${baseCharacters}${characterId}?ts=1&${authorization}`)
+            setCharacterData(response.data.data.results[0]);
+            setCharacterWindow(false)
+
+        } catch (error) {
+            console.error(error)
+        }
     }
 
+
+    // const viewCharacterFavorites = async () => {
+    //     const querySnapshot = await getDocs(collection(fireStore, "users/" + userID.uid + "/favs"));
+    //     querySnapshot.forEach((doc) => {
+    //         // console.log(doc.id, " => ", doc.data());
+    //         const duplicateValidation = favoritesListTemp.some(favCharacterID => favCharacterID.id === doc.data().id);
+    //         if (duplicateValidation === false ){
+    //             favoritesListTemp.push(doc.data());
+    //             setFavoritesListTemp(favoritesListTemp)
+    //             const currentCharacters = favoritesListTemp.slice(indexOfFirstCharacter, indexOfLastCharacter);
+    //             setFavoritesCharacters(currentCharacters)
+    //             setTotalFavorites(favoritesListTemp.length)
+    //         }
+    //     });
+    //
+    // }
+
+        const viewCharacterFavorites  = async () => {
+            try {
+                // eslint-disable-next-line no-template-curly-in-string
+                const response = await axios.get("http://localhost:8080/api/v1/favsbyuserid/" + userID.uid);
+                for (let i = 0; i < response.data.length; i++) {
+                    favoritesListTemp.push(response.data[i]);
+
+                }
+                        const currentCharacters = favoritesListTemp.slice(indexOfFirstCharacter, indexOfLastCharacter);
+                        setFavoritesCharacters(currentCharacters)
+                        setTotalFavorites(favoritesListTemp.length)
+
+
+            } catch (error) {
+                console.error(error)
+            }
+
+
+
+        }
     const removeFromCharactersFavList = (character) => {
         const getIndex = (element) => element.id === character.id;
         let index = favoritesListTemp.findIndex(getIndex)
@@ -55,7 +76,6 @@ const Favorites = ({remove,userID}) => {
     }
 
     const paginateForCharacters = pageNumber => {setCurrentPageCharacter(pageNumber)}
-
     useEffect(()=>{
         viewCharacterFavorites()
     },[userID])
@@ -73,15 +93,15 @@ const Favorites = ({remove,userID}) => {
                                 {
                                     favoritesCharacters.map((value => {
                                         return (
-                                            <div key={value.id} className=" mx-4 col-4 col-md-2 col-lg-1 col-xl-1">
+                                            <div key={value.charId} className=" mx-4 col-4 col-md-2 col-lg-1 col-xl-1">
                                                 <img className='favImg d-flex' onClick={()=> {
-                                                    setCharacterData(value);
-                                                    setCharacterWindow(false)
+                                                    fetchCharacterData(value.charId)
                                                 }}
-                                                     src={value.thumbnail.path.replace('http','https') + "/landscape_small." + value.thumbnail.extension}
-                                                     alt=""/>
+                                                     src={value.charImage.replace('http','https') + "/landscape_small." + value.imageExtenstion}
+                                                     alt=""
+                                                    />
 
-                                                <p className={`text-truncate`}>{value.name}</p>
+                                                <p className={`text-truncate`}>{value.charName}</p>
 
                                             </div>
                                         )
@@ -118,7 +138,10 @@ const Favorites = ({remove,userID}) => {
 
                                 </div>
                             </div>
-                            <CharacterData res={characterData}/>
+
+                           <CharacterData res={characterData}/>
+
+
 
 
                         </>)
