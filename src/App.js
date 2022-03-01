@@ -50,7 +50,8 @@ function App() {
             if (image.src.match(heart)) {
                 if (doubleValidation === false){
                     favoritesCharactersList.push(character)
-                    writeToUserFavorites(character, character.id)
+                    writeToUserFavorites(character)
+                    console.log(character)
                     console.log("favoritesList added")
                 }
                 image.src = heart_fill;
@@ -91,10 +92,9 @@ function App() {
 
     const viewCollection = async () => {
         try {
-            // eslint-disable-next-line no-template-curly-in-string
             const  response = await  axios.get("http://localhost:8080/api/v1/favsbyuserid/"+userID.uid);
-            favoritesCharactersList.push(response.data)
-
+            favoritesCharactersList.push(...response.data)
+            setFavoritesCharacters(favoritesCharactersList)
         } catch (error) {
             console.error(error)
         }
@@ -112,20 +112,32 @@ function App() {
             }
     }
 
-    const writeToUserFavorites = (obj, name) => {
+    const writeToUserFavorites =  (character) => {
 
+         axios.post('http://localhost:8080/api/v1/addtofavs', {
+                "charId": character.id,
+                "userId": userID.uid,
+                "charName": character.name,
+                "charImage": character.thumbnail.path,
+                "imageExtenstion":character.thumbnail.extension
+
+            }
+        )
 
     }
 
+    
 
-    const removeFromUserFavorites = async (characterInfo) => {
+ 
+    const removeFromUserFavorites = async () =>{
         try {
-            await deleteDoc(doc(fireStore, "users/" + userID.uid + "/favs", characterInfo.toString()));
+            await axios.delete("http://localhost:8080/api/v1/deletefav/")
         } catch (e) {
             console.log(e)
         }
     }
-
+    
+    
 
 
     const logout = async () => {
@@ -142,6 +154,7 @@ function App() {
 
 
     useEffect(() => {
+        viewCollection()
         getUserName()
         stateChange()
     }, [userID,userName])
@@ -163,7 +176,7 @@ function App() {
                     <Route path='signUp' element={<SignUp setUserID={setUserID}/>}/>
                     <Route path='login' element={<Login/>}/>
                     <Route path='account' element={<UserAccount userID={userID} username={userName} logout={logout}/>}/>
-                    <Route path='favorites' element={<Favorites userID={userID}
+                    <Route path='favorites' element={<Favorites userID={userID}  favoritesList={favoritesCharacters}
 
                     />}/>
                 </Routes>

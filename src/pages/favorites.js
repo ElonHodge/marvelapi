@@ -7,8 +7,8 @@ import {baseCharacters,authorization} from "../apiInfo";
 
 
 
-const Favorites = ({userID}) => {
-    const [favoritesListTemp,setFavoritesListTemp] = useState([]);
+const Favorites = ({userID,favoritesList}) => {
+    const [favoritesListTemp,] = useState([]);
     const [favoritesCharacters, setFavoritesCharacters] = useState([]);
     const [favoritesId, setFavoritesId] = useState();
     const [currentPageCharacter, setCurrentPageCharacter] = useState(1);
@@ -58,13 +58,9 @@ const Favorites = ({userID}) => {
                         setFavoritesCharacters(currentCharacters)
                         setTotalFavorites(favoritesListTemp.length)
 
-
             } catch (error) {
                 console.error(error)
             }
-
-
-
         }
 
     const removeFromCharactersFavList = (character) => {

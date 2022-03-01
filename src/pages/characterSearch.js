@@ -36,7 +36,7 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
     const [numberSet, setNumberSet] = useState(1);
     const [buttonsNumSet, setButtonsNumSet] = useState([])
     const [count,setCount] = useState(Math.ceil(apiData.data.total / 100));
-
+    
     let characterSearch = `${base}${characters}${time}${characterFilter}${userInput}${orderBy}${limit}&offset=${offSet}${authorization}`
 
     const fetchCharacter = async () => {
@@ -291,13 +291,13 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
             </div>
             {
                 (currentCharacter.length > 0 ?
-                    characterDatalayout()
+                    characterDataLayout()
                     : "")
             }
 
         </div>
 
-    const characterDatalayout = () => <div className="col-6 border">
+    const characterDataLayout = () => <div className="col-6 border">
             <div className=" position-sticky  " style={{top: "2rem"}}>
 
                 <CharacterData res={characterData}/>
@@ -326,7 +326,7 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
     const showFavorites = () => {
         if (favoritesList.length > 0){
             for (let i = 0; i  < favoritesList.length ; i++) {
-                let image =  document.getElementById("H"+favoritesList[i].id);
+                let image =  document.getElementById("H"+favoritesList[i].charId);
                 if (image != null){
                     image.src = heart_fill;
                 }
