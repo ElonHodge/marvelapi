@@ -81,6 +81,7 @@ const Favorites = ({userID,favoritesList}) => {
         }
     }
 
+
     const paginateForCharacters = pageNumber => {setCurrentPageCharacter(pageNumber)}
     useEffect(()=>{
         viewCharacterFavorites()

@@ -32,7 +32,6 @@ const fireStore = getFirestore();
 const auth = getAuth(firebaseApp);
 
 function App() {
-    const favoritesCharactersList = [];
     const [userID, setUserID] = useState("")
     const [userName,setUsername ] = useState("");
     const [favoritesCharacters, setFavoritesCharacters] = useState([]);
@@ -43,38 +42,35 @@ function App() {
 //**Hearts**//
     const toggleHeart = (character) => {
         if (userID !== "") {
-            const doubleValidation = favoritesCharactersList.some(favCharacterID => favCharacterID.id === character.id);
-            const getIndex = (element) => element.id === character.id;
-
+            const doubleValidation = favoritesCharacters.some(favCharacter => favCharacter.charId === character.id);
+            const getIndex = (element) => element.charId === character.id;
             let image = document.getElementById("H" + character.id);
             if (image.src.match(heart)) {
                 if (doubleValidation === false){
-                    favoritesCharactersList.push(character)
+                    favoritesCharacters.push(character)
                     writeToUserFavorites(character)
-                    console.log(character)
                     console.log("favoritesList added")
                 }
                 image.src = heart_fill;
 
             } else {
-                let index = favoritesCharactersList.findIndex(getIndex)
-                favoritesCharactersList.splice(index, 1)
+                let index = favoritesCharacters.findIndex(getIndex);
+                favoritesCharacters.splice(index, 1)
                 image.src = heart;
-                removeFromUserFavorites(character.id)
-                viewCollection()
+                deleteCharacterFromUsersFavorites(favoritesCharacters[index].favId)
                 console.log("favoritesList removed")
             }
         }
     }
 
-    const removeFromFavorite = (character) =>{
-        const getIndex = (element) => element.id === character.id;
-        let index = favoritesCharactersList.findIndex(getIndex)
-        favoritesCharactersList.splice(index, 1)
-        removeFromUserFavorites(character.id)
-        viewCollection();
-        }
 
+    const deleteCharacterFromUsersFavorites = async (favId) =>{
+        try {
+            await axios.delete("http://localhost:8080/api/v1/deletefav/" + favId)
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     const stateChange = async () => {
         await onAuthStateChanged(auth, (user) => {
@@ -90,11 +86,11 @@ function App() {
 
     }
 
+
     const viewCollection = async () => {
         try {
             const  response = await  axios.get("http://localhost:8080/api/v1/favsbyuserid/"+userID.uid);
-            favoritesCharactersList.push(...response.data)
-            setFavoritesCharacters(favoritesCharactersList)
+            setFavoritesCharacters(response.data)
         } catch (error) {
             console.error(error)
         }
@@ -129,14 +125,7 @@ function App() {
     
 
  
-    const removeFromUserFavorites = async () =>{
-        try {
-            await axios.delete("http://localhost:8080/api/v1/deletefav/")
-        } catch (e) {
-            console.log(e)
-        }
-    }
-    
+
     
 
 
