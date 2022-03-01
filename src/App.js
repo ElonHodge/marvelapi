@@ -164,7 +164,7 @@ function App() {
                     <Route path='login' element={<Login/>}/>
                     <Route path='account' element={<UserAccount userID={userID} username={userName} logout={logout}/>}/>
                     <Route path='favorites' element={<Favorites userID={userID}
-                                                                remove={removeFromFavorite}
+
                     />}/>
                 </Routes>
             </div>

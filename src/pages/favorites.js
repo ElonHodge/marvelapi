@@ -7,7 +7,7 @@ import {baseCharacters,authorization} from "../apiInfo";
 
 
 
-const Favorites = ({remove,userID}) => {
+const Favorites = ({userID}) => {
     const [favoritesListTemp,setFavoritesListTemp] = useState([]);
     const [favoritesCharacters, setFavoritesCharacters] = useState([]);
     const [currentPageCharacter, setCurrentPageCharacter] = useState(1);
@@ -47,7 +47,7 @@ const Favorites = ({remove,userID}) => {
     //
     // }
 
-        const viewCharacterFavorites  = async () => {
+    const viewCharacterFavorites  = async () => {
             try {
                 // eslint-disable-next-line no-template-curly-in-string
                 const response = await axios.get("http://localhost:8080/api/v1/favsbyuserid/" + userID.uid);
@@ -67,19 +67,24 @@ const Favorites = ({remove,userID}) => {
 
 
         }
+
     const removeFromCharactersFavList = (character) => {
-        const getIndex = (element) => element.id === character.id;
+
+        const getIndex = (element) => element.charId === character.id;
         let index = favoritesListTemp.findIndex(getIndex)
         favoritesListTemp.splice(index, 1)
         favoritesCharacters.splice(index, 1)
         setTotalFavorites(favoritesListTemp.length)
+
     }
+
+
 
     const paginateForCharacters = pageNumber => {setCurrentPageCharacter(pageNumber)}
     useEffect(()=>{
         viewCharacterFavorites()
     },[userID])
-
+        //t0d0
     return(
             <div className="container-fluid">
                 {
@@ -96,6 +101,7 @@ const Favorites = ({remove,userID}) => {
                                             <div key={value.charId} className=" mx-4 col-4 col-md-2 col-lg-1 col-xl-1">
                                                 <img className='favImg d-flex' onClick={()=> {
                                                     fetchCharacterData(value.charId)
+
                                                 }}
                                                      src={value.charImage.replace('http','https') + "/landscape_small." + value.imageExtenstion}
                                                      alt=""
@@ -123,7 +129,6 @@ const Favorites = ({remove,userID}) => {
                             <div className="d-flex bd-highlight mb-3 ">
                                 <div className=" me-auto p-2 bd-highlight">
                                     <button type={"button"} onClick={()=>{
-                                        remove(characterData);
                                         setCharacterWindow(true);
                                         removeFromCharactersFavList(characterData);
 
