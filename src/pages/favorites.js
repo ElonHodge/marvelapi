@@ -10,6 +10,7 @@ import {baseCharacters,authorization} from "../apiInfo";
 const Favorites = ({userID}) => {
     const [favoritesListTemp,setFavoritesListTemp] = useState([]);
     const [favoritesCharacters, setFavoritesCharacters] = useState([]);
+    const [favoritesId, setFavoritesId] = useState();
     const [currentPageCharacter, setCurrentPageCharacter] = useState(1);
     const [charactersPerPage] = useState(20);
     const [characterData, setCharacterData] = useState("");
@@ -51,10 +52,8 @@ const Favorites = ({userID}) => {
             try {
                 // eslint-disable-next-line no-template-curly-in-string
                 const response = await axios.get("http://localhost:8080/api/v1/favsbyuserid/" + userID.uid);
-                for (let i = 0; i < response.data.length; i++) {
-                    favoritesListTemp.push(response.data[i]);
 
-                }
+                favoritesListTemp.push(...response.data)
                         const currentCharacters = favoritesListTemp.slice(indexOfFirstCharacter, indexOfLastCharacter);
                         setFavoritesCharacters(currentCharacters)
                         setTotalFavorites(favoritesListTemp.length)
@@ -69,16 +68,22 @@ const Favorites = ({userID}) => {
         }
 
     const removeFromCharactersFavList = (character) => {
-
+        console.log(character)
         const getIndex = (element) => element.charId === character.id;
         let index = favoritesListTemp.findIndex(getIndex)
         favoritesListTemp.splice(index, 1)
         favoritesCharacters.splice(index, 1)
         setTotalFavorites(favoritesListTemp.length)
-
+        deleteCharacterFromFavorites()
     }
 
-
+    const deleteCharacterFromFavorites = async () =>{
+        try {
+         await axios.delete("http://localhost:8080/api/v1/deletefav/" +favoritesId)
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     const paginateForCharacters = pageNumber => {setCurrentPageCharacter(pageNumber)}
     useEffect(()=>{
@@ -101,6 +106,7 @@ const Favorites = ({userID}) => {
                                             <div key={value.charId} className=" mx-4 col-4 col-md-2 col-lg-1 col-xl-1">
                                                 <img className='favImg d-flex' onClick={()=> {
                                                     fetchCharacterData(value.charId)
+                                                    setFavoritesId(value.favId);
 
                                                 }}
                                                      src={value.charImage.replace('http','https') + "/landscape_small." + value.imageExtenstion}
