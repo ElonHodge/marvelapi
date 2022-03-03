@@ -1,4 +1,3 @@
-import {Link} from "react-router-dom";
 
 const PaginationSets = ({pages,paginate,mouseOver,click}) => {
 

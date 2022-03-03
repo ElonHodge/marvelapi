@@ -50,12 +50,12 @@ const Login = () => {
 
         try {
              await signInWithEmailAndPassword(auth, email, password);
+            if (location.state.toString() === "/account"){
+                navigate("/accountEdit",{replace:true})
+            }else {
 
-
-
-            console.log(auth.currentUser);
-
-            navigate(location.state, {replace:true})
+                navigate(location.state, {replace:true})
+            }
 
         } catch (e) {
             setPasswordHelper("Email/Password combination not valid")

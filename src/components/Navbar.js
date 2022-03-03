@@ -4,10 +4,9 @@ import {useContext} from "react";
 import UserContext from "../contexts/UserContext";
 import personCircleWhite from '../images/personCircleWhite.svg'
 
-const Navbar = ({logout,username}) => {
+const Navbar = ({logout,userInfo}) => {
     const user = useContext(UserContext)
     const location = useLocation();
-
     useEffect(() => user,[user])
     return (
         <nav className="navbar navbar-expand-sm navbar-light bg-black ">
@@ -34,7 +33,7 @@ const Navbar = ({logout,username}) => {
                             className="sr-only">Comics</span></Link>
                     </li>
                     {user ? <li className="nav-item ">
-                            <Link className="nav-link text-white" to="favorites">Favorites</Link>
+                            <Link className="nav-link text-white" state={location.pathname} to="favorites">Favorites</Link>
                         </li> : "" }
 
                 </ul>
@@ -55,11 +54,11 @@ const Navbar = ({logout,username}) => {
                                                 <button className="btn btn-outline-light dropdown-toggle" type="button"
                                                         id="dropdownMenuButton1" data-bs-toggle="dropdown"
                                                         aria-expanded="false">
-                                                    {"  "+username }
+                                                    {"  "+userInfo.userName}
                                                 </button>
 
                                                 <ul className="dropdown-menu dropdown-menu-md-end" aria-labelledby="dropdownMenuButton1">
-                                                    <li> <Link className = " nav-link text-black dropdown-item" to="account">
+                                                    <li> <Link className = " nav-link text-black dropdown-item" state={location.pathname} to="account">
                                                         To account
                                                     </Link></li>
                                                      <button type={"button"} onClick={() =>  logout()}

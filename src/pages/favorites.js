@@ -7,7 +7,7 @@ import {baseCharacters,authorization} from "../apiInfo";
 
 
 
-const Favorites = ({userID,favoritesList}) => {
+const Favorites = ({userID}) => {
     const [favoritesListTemp,] = useState([]);
     const [favoritesCharacters, setFavoritesCharacters] = useState([]);
     const [favoritesId, setFavoritesId] = useState();
@@ -32,21 +32,7 @@ const Favorites = ({userID,favoritesList}) => {
     }
 
 
-    // const viewCharacterFavorites = async () => {
-    //     const querySnapshot = await getDocs(collection(fireStore, "users/" + userID.uid + "/favs"));
-    //     querySnapshot.forEach((doc) => {
-    //         // console.log(doc.id, " => ", doc.data());
-    //         const duplicateValidation = favoritesListTemp.some(favCharacterID => favCharacterID.id === doc.data().id);
-    //         if (duplicateValidation === false ){
-    //             favoritesListTemp.push(doc.data());
-    //             setFavoritesListTemp(favoritesListTemp)
-    //             const currentCharacters = favoritesListTemp.slice(indexOfFirstCharacter, indexOfLastCharacter);
-    //             setFavoritesCharacters(currentCharacters)
-    //             setTotalFavorites(favoritesListTemp.length)
-    //         }
-    //     });
-    //
-    // }
+
 
     const viewCharacterFavorites  = async () => {
             try {

@@ -250,9 +250,7 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
 
                                                     <div className="col-2 ">
                                                         <button type={"button"} className={`btnClear`}
-                                                                data-bs-toggle="tooltip"
-                                                                data-bs-placement="bottom"
-                                                                title="Login to like"
+
                                                         >
                                                             {/*{**Hearts*}*/}
                                                             <img id={"H" + value.id} src={heart} alt={`heart`}
@@ -345,7 +343,6 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
     }
 
 
-
     useEffect(() => {
             showFavorites()
         let tempNumberOfPages;
@@ -374,7 +371,7 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
         setCurrentPage(currentPage);
         setNumberSet(numberSet);
     }, [count,numberSet,favoritesList])
-
+        
     return (
 
     <div className='container-fluid'>
