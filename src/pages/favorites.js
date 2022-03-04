@@ -37,7 +37,7 @@ const Favorites = ({userID}) => {
     const viewCharacterFavorites  = async () => {
             try {
                 // eslint-disable-next-line no-template-curly-in-string
-                const response = await axios.get("http://localhost:8080/api/v1/favsbyuserid/" + userID.uid);
+                const response = await axios.get("https://marveldatabasejava.herokuapp.com/api/v1/favsbyuserid/" + userID.uid);
 
                 favoritesListTemp.push(...response.data)
                         const currentCharacters = favoritesListTemp.slice(indexOfFirstCharacter, indexOfLastCharacter);
@@ -61,7 +61,7 @@ const Favorites = ({userID}) => {
 
     const deleteCharacterFromFavorites = async () =>{
         try {
-         await axios.delete("http://localhost:8080/api/v1/deletefav/" +favoritesId)
+         await axios.delete("https://marveldatabasejava.herokuapp.com/api/v1/deletefav/" +favoritesId)
         } catch (e) {
             console.log(e)
         }

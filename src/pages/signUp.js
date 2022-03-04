@@ -112,7 +112,7 @@ const SignUp = ({ setUserID }) => {
     const writeToUser = (username,uid,email) => {
 
         try {
-            axios.post("http://localhost:8080/api/v1/adduser", {
+            axios.post("https://marveldatabasejava.herokuapp.com/api/v1/adduser", {
                 "userId": uid,
                 "userEmail": email,
                 "userName": username

@@ -1,27 +1,14 @@
 import React, {useEffect, useState} from 'react'
-import {Link, useNavigate, useLocation,} from 'react-router-dom'
-import {initializeApp} from 'firebase/app';
-import {getAuth,signInWithEmailAndPassword} from 'firebase/auth';
+import {Link} from 'react-router-dom'
+
 import personCircle  from '../images/personCircle.svg'
-const firebaseApp = initializeApp({
-    apiKey: "AIzaSyDkwb1l6sp-XKMsSpowRd-KZXuq3Wo5fQI",
-    authDomain: "marvelapi-1afdc.firebaseapp.com",
-    projectId: "marvelapi-1afdc",
-    storageBucket: "marvelapi-1afdc.appspot.com",
-    messagingSenderId: "736554199494",
-    appId: "1:736554199494:web:ab7a2a04373b372b6eeac7"
-});
-const auth = getAuth(firebaseApp);
 
-
-const Login = () => {
+const Login = ({login}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordHelper, setPasswordHelper] = useState('');
     const [emailHelper,setEmailHelper] = useState('')
     const [disable,setDisable] = useState('disabled')
-    const navigate = useNavigate();
-    const location = useLocation();
 
     const validateEmail = () => {
         (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)?
@@ -44,25 +31,6 @@ const Login = () => {
 
 
 
-
-    const  login = async () => {
-
-
-        try {
-             await signInWithEmailAndPassword(auth, email, password);
-            if (location.state.toString() === "/account"){
-                navigate("/accountEdit",{replace:true})
-            }else {
-
-                navigate(location.state, {replace:true})
-            }
-
-        } catch (e) {
-            setPasswordHelper("Email/Password combination not valid")
-            console.log()
-        }
-    }
-
     useEffect(()=>{
         if (email.length > 0) {
             validateEmail();
@@ -79,11 +47,10 @@ const Login = () => {
 
     const handleSubmit = e => {
         e.preventDefault()
-        login()
+        login(email,password)
 
     }
 
-    // stateChange()
     return (
         <div className={`container  mt-4 `}>
             <div className="row  ">

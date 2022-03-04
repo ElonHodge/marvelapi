@@ -13,7 +13,7 @@ const UserAccountEdit = ({userID,userInfo,updateUserEmail}) => {
 
     const updateUser = async () => {
 
-        await axios.put('http://localhost:8080/api/v1/updateuser/'+userID.uid, {
+        await axios.put('https://marveldatabasejava.herokuapp.com/api/v1/updateuser/'+userID.uid, {
             "userId": userID.uid,
             "userName": userInputName,
             "userEmail": userInputEmail,

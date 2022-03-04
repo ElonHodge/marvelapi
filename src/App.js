@@ -13,13 +13,12 @@ import Favorites from "./pages/favorites";
 import heart from "./images/heart.svg";
 import heart_fill from "./images/heart_fill.svg";
 import {initializeApp} from 'firebase/app';
-import {getAuth, onAuthStateChanged,signOut,updateEmail} from 'firebase/auth';
+import {getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateEmail} from 'firebase/auth';
 import Login from "./pages/login";
 import UserAccount from "./pages/userAccount";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import UserAccountEdit from "./pages/userAccountEdit";
-
 const firebaseApp = initializeApp({
     apiKey: "AIzaSyDkwb1l6sp-XKMsSpowRd-KZXuq3Wo5fQI",
     authDomain: "marvelapi-1afdc.firebaseapp.com",
@@ -29,14 +28,15 @@ const firebaseApp = initializeApp({
     appId: "1:736554199494:web:ab7a2a04373b372b6eeac7"
 });
 const auth = getAuth(firebaseApp);
-
+let counter = 0;
 function App() {
     const [userID, setUserID] = useState("")
     const [userInfo,setUserInfo ] = useState("");
     const [favoritesCharacters, setFavoritesCharacters] = useState([]);
     const navigate = useNavigate();
     const location = useLocation();
-
+    
+    console.log(counter++)
     //**Hearts**//
     const toggleHeart = (character) => {
         if (userID !== "") {
@@ -64,29 +64,31 @@ function App() {
     //**Api delete**//
     const deleteCharacterFromUsersFavorites = async (favId) =>{
         try {
-            await axios.delete("http://localhost:8080/api/v1/deletefav/" + favId)
+            await axios.delete("https://marveldatabasejava.herokuapp.com/api/v1/deletefav/" + favId)
         } catch (e) {
             console.log(e)
         }
     }
 
     const userStateChange = async () => {
+        console.log("userStateChange()")
         await onAuthStateChanged(auth, (user) => {
             if (user) {
+                console.log(user)
                 setUserID(user);
-            } else {
-                setFavoritesCharacters([])
-                setUserID("")
+
             }
+
         });
 
 
     }
 
     const viewCollection = async () => {
-        if (userID!==""){
+        console.log("view collection")
+        if (auth.currentUser !== null) {
             try {
-                const  response = await  axios.get("http://localhost:8080/api/v1/favsbyuserid/"+userID.uid);
+                const response = await axios.get("https://marveldatabasejava.herokuapp.com/api/v1/favsbyuserid/" + userID.uid);
                 setFavoritesCharacters(response.data)
             } catch (error) {
                 console.error(error)
@@ -95,11 +97,11 @@ function App() {
 
 
     }
-
     const getUserName = async () => {
-        if (userID!==""){
+        console.log("getuser")
+        if (auth.currentUser !== null) {
             try {
-                const  response = await  axios.get("http://localhost:8080/api/v1/userbyid/"+userID.uid)
+                const response = await axios.get("https://marveldatabasejava.herokuapp.com/api/v1/userbyid/" + userID.uid)
                 setUserInfo(response.data)
             } catch (error) {
                 console.error(error)
@@ -110,7 +112,7 @@ function App() {
 
     const writeToUserFavorites =  (character) => {
 
-         axios.post('http://localhost:8080/api/v1/addtofavs', {
+         axios.post('https://marveldatabasejava.herokuapp.com/api/v1/addtofavs', {
                 "charId": character.id,
                 "userId": userID.uid,
                 "charName": character.name,
@@ -122,44 +124,59 @@ function App() {
 
     }
 
-
     const updateUserEmail  = async (email) =>{
         try {
             await updateEmail(auth.currentUser, email)
             console.log("updated"+userID)
-
+            getUserName()
         } catch (e) {
             console.log(e)
         }
     }
 
     const logout = async () => {
-        if (location.state === null){
-            navigate("/characters")
-        }else {
-            navigate(location.state, {replace:true})
-        }
+
 
         try {
             await signOut(auth);
             setFavoritesCharacters([])
             setUserID("")
-            setUserInfo('')
-
+            setUserInfo("")
+            if (location.state === null){
+                navigate("/characters")
+            }else {
+                navigate(location.state, {replace:true})
+            }
         } catch (e) {
 
         }
     }
 
+    const login = async (email,password) => {
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            userStateChange()
+            if (location.state.toString() === "/account") {
+                navigate("/accountEdit", {replace: true})
+
+            } else {
+                navigate(location.state, {replace: true})
+            }
+
+        } catch (e) {
+            console.log()
+        }
+    }
+
 
     useEffect(() => {
-        viewCollection()
-        getUserName()
-        userStateChange()
-    }, [userID,userInfo])
+            viewCollection()
+            getUserName()
+            userStateChange()
 
+    }, [userID])
 
-    return (
+return (
         <UserContext.Provider value={userID}>
 
             <div>
@@ -173,7 +190,7 @@ function App() {
                     <Route path='comics' element={<ComicSearch res={spiderComicData}/>}/>
 
                     <Route path='signUp' element={<SignUp setUserID={setUserID}/>}/>
-                    <Route path='login' element={<Login/>}/>
+                    <Route path='login' element={<Login login={login}/>}/>
                     <Route path='account' element={<UserAccount userID={userID}
                                                                 userInfo={userInfo} logout={logout}
                                                                
