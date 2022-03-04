@@ -5,7 +5,7 @@ import {Route, Routes, useLocation} from "react-router-dom";
 import {CharacterSearch} from "./pages/characterSearch";
 import Navbar from "./components/Navbar";
 import Home from "./pages/home";
-import { useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import UserContext from "./contexts/UserContext";
 import ComicSearch from "./pages/comicSearch";
 import SignUp from "./pages/signUp";
@@ -19,6 +19,7 @@ import UserAccount from "./pages/userAccount";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import UserAccountEdit from "./pages/userAccountEdit";
+
 const firebaseApp = initializeApp({
     apiKey: "AIzaSyDkwb1l6sp-XKMsSpowRd-KZXuq3Wo5fQI",
     authDomain: "marvelapi-1afdc.firebaseapp.com",
@@ -29,14 +30,16 @@ const firebaseApp = initializeApp({
 });
 const auth = getAuth(firebaseApp);
 let counter = 0;
+
 function App() {
     const [userID, setUserID] = useState("")
-    const [userInfo,setUserInfo ] = useState("");
+    const [userInfo, setUserInfo] = useState("");
     const [favoritesCharacters, setFavoritesCharacters] = useState([]);
     const navigate = useNavigate();
     const location = useLocation();
-    
+
     console.log(counter++)
+
     //**Hearts**//
     const toggleHeart = (character) => {
         if (userID !== "") {
@@ -46,7 +49,7 @@ function App() {
             if (image.src.match(heart)) {
                 if (doubleValidation === false) {
                     favoritesCharacters.push(character)
-                    writeToUserFavorites(character)
+                    postToUserFavorites(character)
                     console.log("favoritesList added")
                 }
                 image.src = heart_fill;
@@ -61,8 +64,7 @@ function App() {
         }
     }
 
-    //**Api delete**//
-    const deleteCharacterFromUsersFavorites = async (favId) =>{
+    const deleteCharacterFromUsersFavorites = async (favId) => {
         try {
             await axios.delete("https://marveldatabasejava.herokuapp.com/api/v1/deletefav/" + favId)
         } catch (e) {
@@ -70,6 +72,7 @@ function App() {
         }
     }
 
+    //** after login to get new user information **
     const userStateChange = async () => {
         console.log("userStateChange()")
         await onAuthStateChanged(auth, (user) => {
@@ -84,8 +87,8 @@ function App() {
 
     }
 
-    const viewCollection = async () => {
-        console.log("view collection")
+    const viewFavorites = async () => {
+
         if (auth.currentUser !== null) {
             try {
                 const response = await axios.get("https://marveldatabasejava.herokuapp.com/api/v1/favsbyuserid/" + userID.uid);
@@ -94,11 +97,10 @@ function App() {
                 console.error(error)
             }
         }
-
-
     }
-    const getUserName = async () => {
-        console.log("getuser")
+
+    const getUserId = async () => {
+
         if (auth.currentUser !== null) {
             try {
                 const response = await axios.get("https://marveldatabasejava.herokuapp.com/api/v1/userbyid/" + userID.uid)
@@ -110,25 +112,23 @@ function App() {
 
     }
 
-    const writeToUserFavorites =  (character) => {
+    const postToUserFavorites = (character) => {
 
-         axios.post('https://marveldatabasejava.herokuapp.com/api/v1/addtofavs', {
+        axios.post('https://marveldatabasejava.herokuapp.com/api/v1/addtofavs', {
                 "charId": character.id,
                 "userId": userID.uid,
                 "charName": character.name,
                 "charImage": character.thumbnail.path,
-                "imageExtenstion":character.thumbnail.extension
-
+                "imageExtenstion": character.thumbnail.extension
             }
         )
-
     }
 
-    const updateUserEmail  = async (email) =>{
+    const updateUserEmail = async (email) => {
         try {
             await updateEmail(auth.currentUser, email)
-            console.log("updated"+userID)
-            getUserName()
+            console.log("updated" + userID)
+            getUserId()
         } catch (e) {
             console.log(e)
         }
@@ -136,23 +136,22 @@ function App() {
 
     const logout = async () => {
 
-
         try {
             await signOut(auth);
             setFavoritesCharacters([])
             setUserID("")
             setUserInfo("")
-            if (location.state === null){
+            if (location.state === null) {
                 navigate("/characters")
-            }else {
-                navigate(location.state, {replace:true})
+            } else {
+                navigate(location.state, {replace: true})
             }
         } catch (e) {
 
         }
     }
 
-    const login = async (email,password) => {
+    const login = async (email, password) => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
             userStateChange()
@@ -170,13 +169,13 @@ function App() {
 
 
     useEffect(() => {
-            viewCollection()
-            getUserName()
-            userStateChange()
+        viewFavorites()
+        getUserId()
+        userStateChange()
 
     }, [userID])
 
-return (
+    return (
         <UserContext.Provider value={userID}>
 
             <div>
@@ -193,12 +192,12 @@ return (
                     <Route path='login' element={<Login login={login}/>}/>
                     <Route path='account' element={<UserAccount userID={userID}
                                                                 userInfo={userInfo} logout={logout}
-                                                               
-                                                            
+
+
                     />}/>
                     <Route path='accountEdit' element={<UserAccountEdit userID={userID}
                                                                         userInfo={userInfo} logout={logout}
-                                                                        updateUserEmail={updateUserEmail}            
+                                                                        updateUserEmail={updateUserEmail}
                     />}/>
                     <Route path='favorites' element={<Favorites userID={userID}/>}/>
                 </Routes>
