@@ -38,7 +38,7 @@ function App() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    console.log(counter++)
+    // console.log(counter++)
 
     //**Hearts**//
     const toggleHeart = (character) => {
@@ -48,7 +48,6 @@ function App() {
             let image = document.getElementById("H" + character.id);
             if (image.src.match(heart)) {
                 if (doubleValidation === false) {
-                    favoritesCharacters.push(character)
                     postToUserFavorites(character)
                     console.log("favoritesList added")
                 }
@@ -65,19 +64,20 @@ function App() {
     }
 
     const deleteCharacterFromUsersFavorites = async (favId) => {
+        console.log(favoritesCharacters)
+        console.log(favId)
         try {
             await axios.delete("https://marveldatabasejava.herokuapp.com/api/v1/deletefav/" + favId)
         } catch (e) {
             console.log(e)
         }
+        console.log(favoritesCharacters)
     }
 
     //** after login to get new user information **
     const userStateChange = async () => {
-        console.log("userStateChange()")
         await onAuthStateChanged(auth, (user) => {
             if (user) {
-                console.log(user)
                 setUserID(user);
 
             }
@@ -113,15 +113,24 @@ function App() {
     }
 
     const postToUserFavorites = (character) => {
-
-        axios.post('https://marveldatabasejava.herokuapp.com/api/v1/addtofavs', {
+        try {
+            axios.post('https://marveldatabasejava.herokuapp.com/api/v1/addtofavs', {
                 "charId": character.id,
                 "userId": userID.uid,
                 "charName": character.name,
                 "charImage": character.thumbnail.path,
                 "imageExtenstion": character.thumbnail.extension
-            }
-        )
+            }).then((res)=>{
+                favoritesCharacters.push(res.data)
+            })
+        } catch (e) {
+            console.log(e)
+        }
+        
+        console.log(favoritesCharacters)
+      
+
+
     }
 
     const updateUserEmail = async (email) => {
@@ -175,6 +184,7 @@ function App() {
 
     }, [userID])
 
+    console.log(favoritesCharacters)
     return (
         <UserContext.Provider value={userID}>
 
