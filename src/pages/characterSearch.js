@@ -244,15 +244,10 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
 
                                             </div>
                                             <div className="col-12 col-md-9  align-self-center ">
-
                                                 <h4 className="text-truncate  ">{value.name}</h4>
                                                 <div className="row">
-
                                                     <div className="col-2 ">
-                                                        <button type={"button"} className={`btnClear`}
-
-                                                        >
-                                                            {/*{**Hearts*}*/}
+                                                        <button type={"button"} className={`btnClear`}>
                                                             <img id={"H" + value.id} src={heart} alt={`heart`}
                                                                  onClick={() => {
                                                                      toggleHeart(value);

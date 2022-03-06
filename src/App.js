@@ -40,111 +40,19 @@ function App() {
 
     // console.log(counter++)
 
-    //**Hearts**//
-    const toggleHeart = (character) => {
-        if (userID !== "") {
-            const doubleValidation = favoritesCharacters.some(favCharacter => favCharacter.charId === character.id);
-            const getIndex = (element) => element.charId === character.id;
-            let image = document.getElementById("H" + character.id);
-            if (image.src.match(heart)) {
-                if (doubleValidation === false) {
-                    postToUserFavorites(character)
-                    console.log("favoritesList added")
-                }
-                image.src = heart_fill;
+    //Todo add favorites
 
-            } else {
-                let index = favoritesCharacters.findIndex(getIndex);
-                deleteCharacterFromUsersFavorites(favoritesCharacters[index].favId)
-                favoritesCharacters.splice(index, 1)
-                image.src = heart;
-                console.log("favoritesList removed")
-            }
-        }
-    }
-
-    const deleteCharacterFromUsersFavorites = async (favId) => {
-        console.log(favoritesCharacters)
-        console.log(favId)
-        try {
-            await axios.delete("https://marveldatabasejava.herokuapp.com/api/v1/deletefav/" + favId)
-        } catch (e) {
-            console.log(e)
-        }
-        console.log(favoritesCharacters)
-    }
-
-    //** after login to get new user information **
+    // after login to get new user information **
     const userStateChange = async () => {
         await onAuthStateChanged(auth, (user) => {
             if (user) {
                 setUserID(user);
 
             }
-
         });
-
-
-    }
-
-    const viewFavorites = async () => {
-
-        if (auth.currentUser !== null) {
-            try {
-                const response = await axios.get("https://marveldatabasejava.herokuapp.com/api/v1/favsbyuserid/" + userID.uid);
-                setFavoritesCharacters(response.data)
-            } catch (error) {
-                console.error(error)
-            }
-        }
-    }
-
-    const getUserId = async () => {
-
-        if (auth.currentUser !== null) {
-            try {
-                const response = await axios.get("https://marveldatabasejava.herokuapp.com/api/v1/userbyid/" + userID.uid)
-                setUserInfo(response.data)
-            } catch (error) {
-                console.error(error)
-            }
-        }
-
-    }
-
-    const postToUserFavorites = (character) => {
-        try {
-            axios.post('https://marveldatabasejava.herokuapp.com/api/v1/addtofavs', {
-                "charId": character.id,
-                "userId": userID.uid,
-                "charName": character.name,
-                "charImage": character.thumbnail.path,
-                "imageExtenstion": character.thumbnail.extension
-            }).then((res)=>{
-                favoritesCharacters.push(res.data)
-            })
-        } catch (e) {
-            console.log(e)
-        }
-        
-        console.log(favoritesCharacters)
-      
-
-
-    }
-
-    const updateUserEmail = async (email) => {
-        try {
-            await updateEmail(auth.currentUser, email)
-            console.log("updated" + userID)
-            getUserId()
-        } catch (e) {
-            console.log(e)
-        }
     }
 
     const logout = async () => {
-
         try {
             await signOut(auth);
             setFavoritesCharacters([])
@@ -176,6 +84,91 @@ function App() {
         }
     }
 
+    const getUserId = async () => {
+
+        if (auth.currentUser !== null) {
+            try {
+                const response = await axios.get("https://marveldatabasejava.herokuapp.com/api/v1/userbyid/" + userID.uid)
+                setUserInfo(response.data)
+            } catch (error) {
+                console.error(error)
+            }
+        }
+
+    }
+
+    const viewFavorites = async () => {
+
+        if (auth.currentUser !== null) {
+            try {
+                const response = await axios.get("https://marveldatabasejava.herokuapp.com/api/v1/favsbyuserid/" + userID.uid);
+                setFavoritesCharacters(response.data)
+            } catch (error) {
+                console.error(error)
+            }
+        }
+    }
+
+    const deleteFromFavorites = async (favId,tempListIndex) => {
+        try {
+            await axios.delete("https://marveldatabasejava.herokuapp.com/api/v1/deletefav/" + favId)
+                .then(()=> favoritesCharacters.splice(tempListIndex, 1)
+                )
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const postToUserFavorites = (character) => {
+        try {
+            axios.post('https://marveldatabasejava.herokuapp.com/api/v1/addtofavs', {
+                "charId": character.id,
+                "userId": userID.uid,
+                "charName": character.name,
+                "charImage": character.thumbnail.path,
+                "imageExtenstion": character.thumbnail.extension
+            }).then((res)=> favoritesCharacters.push(res.data))
+        } catch (e) {
+            console.log(e)
+        }
+
+        console.log(favoritesCharacters)
+
+
+
+    }
+
+    const updateUserEmail = async (email) => {
+        try {
+            await updateEmail(auth.currentUser, email)
+            console.log("updated" + userID)
+            getUserId()
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const toggleHeart = (character) => {
+        if (userID !== "") {
+            const doubleValidation = favoritesCharacters.some(favCharacter => favCharacter.charId === character.id);
+            // Used to get the ID made in characterSearchLayout in CharacterSearch.js
+            let image = document.getElementById("H" + character.id);
+            if (image.src.match(heart)) {
+                if (doubleValidation === false) {
+                    postToUserFavorites(character)
+                    console.log("favoritesList added")
+                }
+                image.src = heart_fill;
+            } else {
+                const getIndex = (element) => element.charId === character.id;
+                let index = favoritesCharacters.findIndex(getIndex);
+                deleteFromFavorites(favoritesCharacters[index].favId,index)
+                image.src = heart;
+                console.log("favoritesList removed")
+            }
+        }
+    }
+
 
     useEffect(() => {
         viewFavorites()
@@ -184,7 +177,7 @@ function App() {
 
     }, [userID])
 
-    console.log(favoritesCharacters)
+    // console.log(favoritesCharacters)
     return (
         <UserContext.Provider value={userID}>
 
@@ -209,7 +202,12 @@ function App() {
                                                                         userInfo={userInfo} logout={logout}
                                                                         updateUserEmail={updateUserEmail}
                     />}/>
-                    <Route path='favorites' element={<Favorites userID={userID}/>}/>
+                    <Route path='favorites' element={<Favorites userID={userID}
+                                                                favoritesList={favoritesCharacters}
+                                                                deleteFromFavorites={deleteFromFavorites}
+
+
+                    />}/>
                 </Routes>
             </div>
         </UserContext.Provider>

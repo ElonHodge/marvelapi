@@ -7,7 +7,7 @@ import {baseCharacters,authorization} from "../apiInfo";
 
 
 
-const Favorites = ({userID}) => {
+const Favorites = ({userID,favoritesList,deleteFromFavorites}) => {
     const [favoritesListTemp,] = useState([]);
     const [favoritesCharacters, setFavoritesCharacters] = useState([]);
     const [favoritesId, setFavoritesId] = useState();
@@ -18,7 +18,6 @@ const Favorites = ({userID}) => {
     const [characterWindow, setCharacterWindow] = useState(true);
     const indexOfLastCharacter = currentPageCharacter * charactersPerPage;
     const indexOfFirstCharacter = indexOfLastCharacter - charactersPerPage;
-
 
     const fetchCharacterData = async (characterId) => {
         try {
@@ -31,22 +30,11 @@ const Favorites = ({userID}) => {
         }
     }
 
-
-
-
-    const viewCharacterFavorites  = async () => {
-            try {
-                // eslint-disable-next-line no-template-curly-in-string
-                const response = await axios.get("https://marveldatabasejava.herokuapp.com/api/v1/favsbyuserid/" + userID.uid);
-
-                favoritesListTemp.push(...response.data)
-                        const currentCharacters = favoritesListTemp.slice(indexOfFirstCharacter, indexOfLastCharacter);
-                        setFavoritesCharacters(currentCharacters)
-                        setTotalFavorites(favoritesListTemp.length)
-
-            } catch (error) {
-                console.error(error)
-            }
+    const viewCharacterFavorites = () =>{
+            favoritesListTemp.push(...favoritesList)
+                                const currentCharacters = favoritesListTemp.slice(indexOfFirstCharacter, indexOfLastCharacter);
+                                setFavoritesCharacters(currentCharacters)
+                                setTotalFavorites(favoritesListTemp.length)
         }
 
     const removeFromCharactersFavList = (character) => {
@@ -56,23 +44,15 @@ const Favorites = ({userID}) => {
         favoritesListTemp.splice(index, 1)
         favoritesCharacters.splice(index, 1)
         setTotalFavorites(favoritesListTemp.length)
-        deleteCharacterFromFavorites()
+        deleteFromFavorites(favoritesId,index)
     }
-
-    const deleteCharacterFromFavorites = async () =>{
-        try {
-         await axios.delete("https://marveldatabasejava.herokuapp.com/api/v1/deletefav/" +favoritesId)
-        } catch (e) {
-            console.log(e)
-        }
-    }
-
 
     const paginateForCharacters = pageNumber => {setCurrentPageCharacter(pageNumber)}
     useEffect(()=>{
         viewCharacterFavorites()
-    },[userID])
-        //t0d0
+    },[userID,favoritesList])
+    
+    
     return(
             <div className="container-fluid">
                 {
@@ -89,9 +69,8 @@ const Favorites = ({userID}) => {
                                             <div key={value.charId} className=" mx-4 col-4 col-md-2 col-lg-1 col-xl-1">
                                                 <img className='favImg d-flex' onClick={()=> {
                                                     fetchCharacterData(value.charId)
-                                                    setFavoritesId(value.favId);
+                                                    setFavoritesId(value.favId);}}
 
-                                                }}
                                                      src={value.charImage.replace('http','https') + "/landscape_small." + value.imageExtenstion}
                                                      alt=""
                                                     />
@@ -134,9 +113,6 @@ const Favorites = ({userID}) => {
                             </div>
 
                            <CharacterData res={characterData}/>
-
-
-
 
                         </>)
                 }
