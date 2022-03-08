@@ -38,7 +38,6 @@ const CharacterSearch = ({res,toggleHeart,favoritesList,userID}) => {
     const [buttonsNumSet, setButtonsNumSet] = useState([])
     const [count,setCount] = useState(Math.ceil(apiData.data.total / 100));
     const navigate = useNavigate();
-    const location = useLocation();
 
 
     let characterSearch = `${base}${characters}${time}${characterFilter}${userInput}${orderBy}${limit}&offset=${offSet}${authorization}`
@@ -155,8 +154,10 @@ const CharacterSearch = ({res,toggleHeart,favoritesList,userID}) => {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-outline-danger" data-bs-dismiss="modal"
-                            onClick={()=>{ navigate("/login")}}
                             >Close</button>
+                            <button type="button" className="btn btn-outline-success" data-bs-dismiss="modal"
+                            onClick={()=>{ navigate("/login")}}
+                            >Sign up</button>
 
 
                         </div>
