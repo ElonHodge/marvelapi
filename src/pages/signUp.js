@@ -99,16 +99,6 @@ const SignUp = ({ setUserID }) => {
 
     }
 
-    // const writeToUser = (username,uid) => {
-    //     const users = doc(fireStore,'users/'+uid)
-    //
-    //     const userInfo = {
-    //         name: username,
-    //     }
-    //
-    //     setDoc(users, userInfo);
-    //
-    // }
     const writeToUser = (username,uid,email) => {
 
         try {
@@ -123,13 +113,12 @@ const SignUp = ({ setUserID }) => {
             console.error(error)
         }
     }
+
     const handleSubmit = e => {
         e.preventDefault()
 
         createAccount()
 
-        // We can use useNavigate from RR to redirect our users to a different component/page
-        // DO NOT FORGET the forward / in front of path in navigate()
         navigate("/characters")
     }
 

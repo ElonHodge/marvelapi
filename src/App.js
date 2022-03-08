@@ -69,15 +69,19 @@ function App() {
     }
 
     const login = async (email, password) => {
+
         try {
             await signInWithEmailAndPassword(auth, email, password);
             userStateChange()
-            if (location.state.toString() === "/account") {
-                navigate("/accountEdit", {replace: true})
+            const  link = location.state.toString();
 
+
+            if (link === "/account") {
+                navigate("/accountEdit", {replace: true})
             } else {
                 navigate(location.state, {replace: true})
             }
+
 
         } catch (e) {
             console.log()
@@ -188,7 +192,9 @@ function App() {
                     <Route path='home' element={<Home/>}/>
                     <Route path='characters' element={<CharacterSearch toggleHeart={toggleHeart}
                                                                        res={characterData}
-                                                                       favoritesList={favoritesCharacters}/>}/>
+                                                                       favoritesList={favoritesCharacters}
+                                                                       userID = {userID}
+                    />}/>
                     <Route path='comics' element={<ComicSearch res={spiderComicData}/>}/>
 
                     <Route path='signUp' element={<SignUp setUserID={setUserID}/>}/>

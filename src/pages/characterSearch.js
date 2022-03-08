@@ -5,7 +5,8 @@ import Pagination from "../components/Pagination";
 import PaginationSets from "../components/PaginationSets";
 import heart from '../images/heart.svg'
 import heart_fill from '../images/heart_fill.svg'
-import favorites from "./favorites";
+import {Link, useLocation, useNavigate} from "react-router-dom";
+import personCircleWhite from "../images/personCircleWhite.svg";
 const apiKey = "&apikey=1566f6b07d868c5b4fc755de7d49438f&"
 const hash = "hash=0b9e5f3a63a2947925a056ce16a6359d"
 const base = "https://gateway.marvel.com/v1/public/"
@@ -17,7 +18,7 @@ const characters = 'characters'
 
 
 
-const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
+const CharacterSearch = ({res,toggleHeart,favoritesList,userID}) => {
     const pageNumbers = []
     const [offSet, setOffSet] = useState(0);
     const data = res.data?.results;
@@ -36,7 +37,10 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
     const [numberSet, setNumberSet] = useState(1);
     const [buttonsNumSet, setButtonsNumSet] = useState([])
     const [count,setCount] = useState(Math.ceil(apiData.data.total / 100));
-    
+    const navigate = useNavigate();
+    const location = useLocation();
+
+
     let characterSearch = `${base}${characters}${time}${characterFilter}${userInput}${orderBy}${limit}&offset=${offSet}${authorization}`
 
     const fetchCharacter = async () => {
@@ -127,6 +131,36 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
 
     const showError = () => {
         return error ? <h3> <span style={{color:"red"}}>error please try again</span> </h3> : ''
+    }
+
+
+    const showModal = () =>{
+        return(
+            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">Login Required</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close">
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            <p className='text-center'>
+                                Sign up or login in to unlocked more features.
+                            </p>
+
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-outline-danger" data-bs-dismiss="modal">
+                                Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            )
+
     }
 
     const currentCharacter = apiData.data.results.slice(indexOfFirstCharacter, indexOfLastCharacter);
@@ -233,6 +267,7 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
                             {
                                 currentCharacter.map((value => {
                                     return (
+
                                         <div key={value.id} className="  row mt-2 CharacterData">
 
                                             <div className="col-6 col-md-3 mr-4 ">
@@ -247,27 +282,28 @@ const CharacterSearch = ({res,toggleHeart,favoritesList}) => {
                                                 <h4 className="text-truncate  ">{value.name}</h4>
                                                 <div className="row">
                                                     <div className="col-2 ">
-                                                        <button type={"button"} className={`btnClear`}>
+                                                        {/*Hears*/}
+                                                        <button type={"button"} className={`btnClear`}
+                                                                data-bs-toggle="modal" data-bs-target="#exampleModal">
                                                             <img id={"H" + value.id} src={heart} alt={`heart`}
                                                                  onClick={() => {
-                                                                     toggleHeart(value);
+                                                                     // eslint-disable-next-line no-unused-expressions
+                                                                      (userID !== "" ? toggleHeart(value) : "")
+
                                                                  }}/>
                                                         </button>
-
+                                                        { userID !=="" ? "" : showModal()}
                                                     </div>
-
                                                 </div>
                                             </div>
-
                                         </div>
-
                                     )
                                 }))
                             }
-
                         </div>
                         :
                         <div>
+
                             {showLoading()}
                             <h1> No results found</h1>
                         </div>)
