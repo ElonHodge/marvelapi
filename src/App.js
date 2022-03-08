@@ -75,17 +75,20 @@ function App() {
             userStateChange()
             const  link = location.state.toString();
 
-
             if (link === "/account") {
                 navigate("/accountEdit", {replace: true})
             } else {
                 navigate(location.state, {replace: true})
             }
 
-
         } catch (e) {
-            console.log()
+         navigate("/characters", {replace: true})
+
         }
+
+       if(location.state === null ){
+           console.log("working")
+       }
     }
 
     const getUserId = async () => {
@@ -181,7 +184,6 @@ function App() {
 
     }, [userID])
 
-    // console.log(favoritesCharacters)
     return (
         <UserContext.Provider value={userID}>
 
@@ -198,7 +200,8 @@ function App() {
                     <Route path='comics' element={<ComicSearch res={spiderComicData}/>}/>
 
                     <Route path='signUp' element={<SignUp setUserID={setUserID}/>}/>
-                    <Route path='login' element={<Login login={login}/>}/>
+                    <Route path='login' element={<Login login={login} userID={userID}
+                    />}/>
                     <Route path='account' element={<UserAccount userID={userID}
                                                                 userInfo={userInfo} logout={logout}
 

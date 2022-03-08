@@ -1,14 +1,17 @@
 import React, {useEffect, useState} from 'react'
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 
 import personCircle  from '../images/personCircle.svg'
 
-const Login = ({login}) => {
+const Login = ({login,userID}) => {
+
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordHelper, setPasswordHelper] = useState('');
     const [emailHelper,setEmailHelper] = useState('')
     const [disable,setDisable] = useState('disabled')
+    const navigate = useNavigate();
 
     const validateEmail = () => {
         (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)?
@@ -32,7 +35,10 @@ const Login = ({login}) => {
 
 
     useEffect(()=>{
-        if (email.length > 0) {
+
+        if (userID !== "") navigate("/favorites")
+
+                if (email.length > 0) {
             validateEmail();
         }
 
@@ -43,14 +49,13 @@ const Login = ({login}) => {
         }
 
 
-    },[email,emailHelper,passwordHelper,password,disable])
+    },[email,emailHelper,passwordHelper,password,disable,userID])
 
     const handleSubmit = e => {
         e.preventDefault()
         login(email,password)
 
     }
-
     return (
         <div className={`container  mt-4 `}>
             <div className="row  ">

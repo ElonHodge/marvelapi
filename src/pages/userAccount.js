@@ -1,17 +1,15 @@
 import React, {useEffect} from 'react';
-import {Link, useLocation} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import '../App'
 const UserAccount = ({userID,userInfo,logout}) => {
 
 
-    const location = useLocation();
-
+    const navigate = useNavigate();
 
     useEffect(() => {
+        if (userID === "") navigate("/login")
+
     },[userID,userInfo])
-
-
-
 
     return (
 

@@ -3,6 +3,7 @@ import Pagination from "../components/Pagination";
 import CharacterData from "./characterData";
 import axios from "axios";
 import {baseCharacters,authorization} from "../apiInfo";
+import {useNavigate} from "react-router-dom";
 
 
 
@@ -18,6 +19,7 @@ const Favorites = ({userID,favoritesList,deleteFromFavorites}) => {
     const [characterWindow, setCharacterWindow] = useState(true);
     const indexOfLastCharacter = currentPageCharacter * charactersPerPage;
     const indexOfFirstCharacter = indexOfLastCharacter - charactersPerPage;
+    const navigate = useNavigate();
 
     const fetchCharacterData = async (characterId) => {
         try {
@@ -49,6 +51,7 @@ const Favorites = ({userID,favoritesList,deleteFromFavorites}) => {
 
     const paginateForCharacters = pageNumber => {setCurrentPageCharacter(pageNumber)}
     useEffect(()=>{
+        if (userID === "") navigate("/login")
         viewCharacterFavorites()
     },[userID,favoritesList])
     

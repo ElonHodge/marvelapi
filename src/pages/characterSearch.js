@@ -151,10 +151,14 @@ const CharacterSearch = ({res,toggleHeart,favoritesList,userID}) => {
                                 Sign up or login in to unlocked more features.
                             </p>
 
+
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-outline-danger" data-bs-dismiss="modal">
-                                Close</button>
+                            <button type="button" className="btn btn-outline-danger" data-bs-dismiss="modal"
+                            onClick={()=>{ navigate("/login")}}
+                            >Close</button>
+
+
                         </div>
                     </div>
                 </div>

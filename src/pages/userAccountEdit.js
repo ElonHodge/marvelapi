@@ -3,13 +3,10 @@ import {Link, useLocation, useNavigate} from "react-router-dom";
 import '../App'
 import axios from "axios";
 const UserAccountEdit = ({userID,userInfo,updateUserEmail}) => {
-
-
+    
     const [userInputName, setUserInputName] = useState(userInfo.userName)
     const [userInputEmail, setUserInputEmail] = useState(userInfo.userEmail)
     const navigate = useNavigate();
-
-
 
     const updateUser = async () => {
 
@@ -35,7 +32,6 @@ const UserAccountEdit = ({userID,userInfo,updateUserEmail}) => {
     }
 
     const cancelButton = () =>{navigate("/account", {replace: true})}
-
 
     const formLayout = () =>
         <form className="row g-3 form-control-sm. mt-4 " onSubmit={handleSubmit}>
@@ -80,17 +76,15 @@ const UserAccountEdit = ({userID,userInfo,updateUserEmail}) => {
     </form>
 
     useEffect(() => {
+        if (userID === "") navigate("/login")
+
     },[userID,userInfo])
-
-
 
 
     return (
 
         <div className={`container-fluid `}>
-
             {formLayout()}
-
         </div>
     );
 };
